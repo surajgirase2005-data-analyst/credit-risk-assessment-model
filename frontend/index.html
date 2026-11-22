@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Loan default risk assessment powered by machine learning." />
+  <title>Credit Risk Assessment System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">◈</span>
+      <span class="brand-name">Credit Risk Assessment System</span>
+    </div>
+    <div class="status" id="api-status" aria-live="polite">
+      <span class="status-dot"></span>
+      <span class="status-text">Checking API…</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <h1>Loan Default Risk Assessment</h1>
+      <p>Enter the applicant's details to estimate the probability of default and receive a risk classification.</p>
+    </section>
+
+    <div class="layout">
+
+      <!-- Application form -->
+      <section class="card form-card" aria-labelledby="form-title">
+        <div class="card-header">
+          <h2 id="form-title">Application details</h2>
+          <button type="button" class="btn-ghost" id="sample-btn">Load sample</button>
+        </div>
+
+        <form id="loan-form" novalidate>
+
+          <fieldset class="section">
+            <legend>Applicant profile</legend>
+            <div class="grid">
+              <div class="field" data-field="person_age">
+                <label for="person_age">Age</label>
+                <input id="person_age" name="person_age" type="number" inputmode="numeric" placeholder="e.g. 34" />
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="person_income">
+                <label for="person_income">Annual income</label>
+                <input id="person_income" name="person_income" type="number" step="any" min="0" placeholder="e.g. 65000" />
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="person_home_ownership">
+                <label for="person_home_ownership">Home ownership</label>
+                <select id="person_home_ownership" name="person_home_ownership">
+                  <option value="">Select…</option>
+                  <option value="RENT">Rent</option>
+                  <option value="MORTGAGE">Mortgage</option>
+                  <option value="OWN">Own</option>
+                  <option value="OTHER">Other</option>
+                </select>
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="person_emp_length">
+                <label for="person_emp_length">Employment length (years)</label>
+                <input id="person_emp_length" name="person_emp_length" type="number" step="0.5" min="0" placeholder="e.g. 5" />
+                <p class="error" role="alert"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="section">
+            <legend>Loan details</legend>
+            <div class="grid">
+              <div class="field" data-field="loan_intent">
+                <label for="loan_intent">Loan intent</label>
+                <select id="loan_intent" name="loan_intent">
+                  <option value="">Select…</option>
+                  <option value="PERSONAL">Personal</option>
+                  <option value="EDUCATION">Education</option>
+                  <option value="MEDICAL">Medical</option>
+                  <option value="VENTURE">Venture</option>
+                  <option value="HOMEIMPROVEMENT">Home improvement</option>
+                  <option value="DEBTCONSOLIDATION">Debt consolidation</option>
+                </select>
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="loan_grade">
+                <label for="loan_grade">Loan grade</label>
+                <select id="loan_grade" name="loan_grade">
+                  <option value="">Select…</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G">G</option>
+                </select>
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="loan_amnt">
+                <label for="loan_amnt">Loan amount</label>
+                <input id="loan_amnt" name="loan_amnt" type="number" step="any" min="1" placeholder="e.g. 12000" />
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="loan_int_rate">
+                <label for="loan_int_rate">Interest rate (%)</label>
+                <input id="loan_int_rate" name="loan_int_rate" type="number" step="0.01" min="0" max="100" placeholder="e.g. 11.5" />
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field full" data-field="loan_percent_income">
+                <label for="loan_percent_income">Loan as % of income <span class="hint">(auto-calculated)</span></label>
+                <input id="loan_percent_income" name="loan_percent_income" type="number" step="any" readonly tabindex="-1" placeholder="Enter income and loan amount" />
+                <p class="error" role="alert"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="section">
+            <legend>Credit history</legend>
+            <div class="grid">
+              <div class="field" data-field="cb_person_default_on_file">
+                <label for="cb_person_default_on_file">Prior default on file</label>
+                <select id="cb_person_default_on_file" name="cb_person_default_on_file">
+                  <option value="">Select…</option>
+                  <option value="N">No</option>
+                  <option value="Y">Yes</option>
+                </select>
+                <p class="error" role="alert"></p>
+              </div>
+
+              <div class="field" data-field="cb_person_cred_hist_length">
+                <label for="cb_person_cred_hist_length">Credit history length (years)</label>
+                <input id="cb_person_cred_hist_length" name="cb_person_cred_hist_length" type="number" step="1" min="0" placeholder="e.g. 8" />
+                <p class="error" role="alert"></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="reset-btn">Reset</button>
+            <button type="submit" class="btn-primary" id="submit-btn">
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span class="btn-text">Assess risk</span>
+            </button>
+          </div>
+
+          <div class="alert" id="error-box" role="alert" hidden></div>
+        </form>
+      </section>
+
+      <!-- Results -->
+      <aside class="card result-card" id="result-card" aria-labelledby="result-title" aria-live="polite">
+        <h2 id="result-title">Assessment</h2>
+
+        <div class="result-empty" id="result-empty">
+          <div class="empty-icon" aria-hidden="true">◎</div>
+          <p>Submit the application to see the risk assessment.</p>
+        </div>
+
+        <div class="result-body" id="result-body" hidden>
+          <span class="badge" id="result-badge">—</span>
+          <p class="summary" id="result-summary"></p>
+
+          <div class="metric">
+            <div class="metric-head">
+              <span>Default probability</span>
+              <strong id="prob-value">0.0%</strong>
+            </div>
+            <div class="meter" aria-hidden="true">
+              <div class="meter-fill" id="prob-fill"></div>
+              <div class="threshold-marker" id="threshold-marker" title="Model risk threshold"></div>
+            </div>
+          </div>
+
+          <dl class="stats">
+            <div>
+              <dt>Model risk threshold</dt>
+              <dd id="threshold-value">—</dd>
+            </div>
+          </dl>
+
+          <p class="disclaimer">
+            This is a model-generated risk estimate intended to support, not replace, human judgment.
+            The system does not approve or reject loan applications. Final lending decisions must be
+            made by authorized credit personnel in line with their institution's policies.
+          </p>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Credit Risk Assessment System · Model v1.0</p>
+  </footer>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>

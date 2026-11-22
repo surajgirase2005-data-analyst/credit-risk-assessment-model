@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Datasets and large data files
+*.csv
+*.tsv
+*.parquet
+
+# Explicitly allow small sample datasets
+!**/sample*.csv
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing and cache files
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Logs and temporary files
+*.log
+temp/
+tmp/
+
+# Frontend dependencies
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
